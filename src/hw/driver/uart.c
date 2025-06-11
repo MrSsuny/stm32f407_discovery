@@ -15,12 +15,16 @@ static bool is_open[UART_MAX_CH];
 
 static qbuffer_t qbuffer[UART_MAX_CH];
 static uint8_t rx_buf[256];
-static uint8_t rx_data[UART_MAX_CH]; //IT 모드일때 사용
 
+#ifndef _USE_HW_UART_DMA
+static uint8_t rx_data[UART_MAX_CH]; //IT 모드일때 사용
+#endif
 //UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart3; //PB10,11
 //DMA_HandleTypeDef hdma_usart1_rx;
-
+#ifdef _USE_HW_UART_DMA
+DMA_HandleTypeDef hdma_usart3_rx;
+#endif
 
 bool uartInit(void)
 {
@@ -79,6 +83,17 @@ bool uartOpen(uint8_t ch, uint32_t baud)
 //      HAL_NVIC_EnableIRQ(DMA2_Stream2_IRQn);
 ////DMA 설정 여기까지
 //
+#ifdef _USE_HW_UART_DMA
+      /* DMA controller clock enable */
+      __HAL_RCC_DMA1_CLK_ENABLE();
+
+      /* DMA interrupt init */
+      /* DMA1_Stream1_IRQn interrupt configuration */
+      HAL_NVIC_SetPriority(DMA1_Stream1_IRQn, 0, 0);
+      HAL_NVIC_EnableIRQ(DMA1_Stream1_IRQn);
+#endif
+
+
 //    if (HAL_UART_Init(&huart1) != HAL_OK)
       if (HAL_UART_Init(&huart3) != HAL_OK)
       {
@@ -97,11 +112,24 @@ bool uartOpen(uint8_t ch, uint32_t baud)
 //        }
 //        qbuffer[ch].in = qbuffer[ch].len - hdma_usart1_rx.Instance->NDTR;
 //        qbuffer[ch].out = qbuffer[ch].in; //buffer는 flush 된다.(ring buffer 의미상)
-//        //IT  일때 이걸로
-         if(HAL_UART_Receive_IT(&huart3, (uint8_t *)&rx_data[_DEF_UART2],1) != HAL_OK)
-         {
-           ret = false;
-         }
+#ifdef _USE_HW_UART_DMA
+//https://www.youtube.com/watch?v=NJd2u4fHXQA&list=PLvFHFPM09alKygQq-L6_6DwuNqTybIAw0&index=10
+//10분정도 위치에 내용 있음
+        if(HAL_UART_Receive_DMA(&huart3, (uint8_t *)&rx_buf[0],256) != HAL_OK)
+        {
+          ret = false;
+        }
+        qbuffer[ch].in = qbuffer[ch].len - hdma_usart3_rx.Instance->NDTR;
+        qbuffer[ch].out = qbuffer[ch].in; //buffer는 flush 된다.(ring buffer 의미상)
+#else //IT  일때 이걸로
+        if(HAL_UART_Receive_IT(&huart3, (uint8_t *)&rx_data[_DEF_UART2],1) != HAL_OK)
+        {
+          ret = false;
+        }
+
+#endif
+
+
        }
        break;
   }
@@ -118,13 +146,18 @@ uint32_t uartAvailable(uint8_t ch)
       ret = cdcAvailable();
       break;
     case _DEF_UART2:
-//DMA 일때
-      //      qbuffer[ch].in = qbuffer[ch].len - hdma_usart1_rx.Instance->NDTR;
-//      //hdma_usart1_rx.Instance->NDTR 초기값은 256 으로 세팅되어 있는 상태
-//      //RM0090 참고
-//      //10.5.6 DMA stream x number of data register (DMA_SxNDTR) (x = 0..7)
-//IT 모드일때 사용
+#ifdef _USE_HW_UART_DMA //DMA 일때
+      qbuffer[ch].in = qbuffer[ch].len - hdma_usart3_rx.Instance->NDTR;
+      //hdma_usart1_rx.Instance->NDTR 초기값은 256 으로 세팅되어 있는 상태
+      //      //RM0090 참고
+      //      //10.5.6 DMA stream x number of data register (DMA_SxNDTR) (x = 0..7)
+#endif
       ret = qbufferAvailable(&qbuffer[ch]); //IT 모드일때 사용
+
+
+
+
+
       break;
   }
 
@@ -226,6 +259,27 @@ void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
     GPIO_InitStruct.Alternate = GPIO_AF7_USART3;
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
+
+#ifdef _USE_HW_UART_DMA
+    /* USART3 DMA Init */
+    /* USART3_RX Init */
+    hdma_usart3_rx.Instance = DMA1_Stream1;
+    hdma_usart3_rx.Init.Channel = DMA_CHANNEL_4;
+    hdma_usart3_rx.Init.Direction = DMA_PERIPH_TO_MEMORY;
+    hdma_usart3_rx.Init.PeriphInc = DMA_PINC_DISABLE;
+    hdma_usart3_rx.Init.MemInc = DMA_MINC_ENABLE;
+    hdma_usart3_rx.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
+    hdma_usart3_rx.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
+    hdma_usart3_rx.Init.Mode = DMA_CIRCULAR;
+    hdma_usart3_rx.Init.Priority = DMA_PRIORITY_LOW;
+    hdma_usart3_rx.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
+    if (HAL_DMA_Init(&hdma_usart3_rx) != HAL_OK)
+    {
+      Error_Handler();
+    }
+
+    __HAL_LINKDMA(uartHandle,hdmarx,hdma_usart3_rx);
+#endif
     /* USART3 interrupt Init */
     HAL_NVIC_SetPriority(USART3_IRQn, 0, 0);
     HAL_NVIC_EnableIRQ(USART3_IRQn);
@@ -252,6 +306,10 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
     */
     HAL_GPIO_DeInit(GPIOB, GPIO_PIN_10|GPIO_PIN_11);
 
+#ifdef _USE_HW_UART_DMA
+    /* USART3 DMA DeInit */
+    HAL_DMA_DeInit(uartHandle->hdmarx);
+#endif
     /* USART3 interrupt Deinit */
     HAL_NVIC_DisableIRQ(USART3_IRQn);
   /* USER CODE BEGIN USART3_MspDeInit 1 */
@@ -302,20 +360,14 @@ void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart)
 //
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-#if 0  //DMA 일대는 필요 없음
-  if(huart->Instance == USART1)
-  {
-    qbufferWrite(&qbuffer[_DEF_UART2],&rx_data[_DEF_UART2],1 );
-
-    HAL_UART_Receive_IT(&huart1, (uint8_t *)&rx_data[_DEF_UART2],1);
-  }
-#endif
+#ifndef _USE_HW_UART_DMA //DMA 사용시 필요 없음
   if(huart->Instance == USART3)
   {
     qbufferWrite(&qbuffer[_DEF_UART2],&rx_data[_DEF_UART2],1 );
 
     HAL_UART_Receive_IT(&huart3, (uint8_t *)&rx_data[_DEF_UART2],1);
   }
+#endif
 }
 
 //void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
