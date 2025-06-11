@@ -1,0 +1,46 @@
+# 💡 빌드 출력물 무시
+**/Debug/
+**/Release/
+**/build/
+
+# 💡 바이너리, 링커, 로그 등
+*.elf
+*.bin
+*.hex
+*.map
+*.list
+*.log
+*.o
+*.d
+*.a
+*.lib
+*.dep
+*.su
+*.exe
+*.out
+
+# 💡 CubeIDE, Eclipse 환경 설정 무시
+.settings/
+.cproject
+.project
+.loadpath
+*.launch
+.metadata/
+
+# 💡 백업, 임시 파일 무시
+*~
+*.swp
+*.swo
+*.swn
+*.bak
+*.tmp
+
+# 💡 CubeMX 내부 임시 파일 (필요 시 유지 가능)
+*.ioc.json
+*.ioc.xml
+*.db
+
+# 💡 Windows / macOS 환경 파일 무시
+.DS_Store
+Thumbs.db
+desktop.ini
