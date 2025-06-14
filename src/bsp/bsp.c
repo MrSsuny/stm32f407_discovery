@@ -29,6 +29,21 @@ uint32_t millis(void)
 {
   return HAL_GetTick();
 }
+
+int __io_putchar(int ch)
+{
+  //USB 로 printf 전송
+#ifdef _USE_DEBUG_STLINK
+  //ITM_SendChar(ch);
+#endif
+#ifdef  _USE_HW_UART
+  uartWrite(_DEF_UART1,(uint8_t *)&ch,1);
+#endif
+  return 1;
+
+}
+
+
 void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
@@ -88,4 +103,5 @@ void Error_Handler(void)
   }
   /* USER CODE END Error_Handler_Debug */
 }
+
 
