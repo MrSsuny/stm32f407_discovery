@@ -45,45 +45,5 @@
 #endif
 
 
-// #define _USE_HW_UART_PERI
-
-// #if defined(_USE_HW_UART) && defined(_USE_HW_UART_PERI)
-// #define _USE_HW_UART_PERI_DMA
-// #ifndef _USE_HW_UART_PERI_DMA
-// #define _USE_HW_UART_PERI_NODMA
-// #endif
-
-// #if defined(_USE_HW_UART_PERI_DMA) && defined(_USE_HW_UART_PERI_NODMA)
-// #error "_USE_HW_UART_PERI_DMA and _USE_HW_UART_PERI_NODMA cannot be defined at the same time"
-// #endif
-
-// #endif //_USE_HW_UART_PERI
-
-
-// //USB Peri
-// #define _USE_HW_USB_PERI
-
-// #ifdef _USE_HW_USB_PERI
-
-// #define _USE_HW_USB_PERI_CDC
-// #if defined(_USE_HW_UART) && defined(_USE_HW_USB_PERI_CDC)
-
-// #define _USE_HW_USB_PERI_CDC_UART_NODMA
-// #ifndef _USE_HW_USB_PERI_CDC_UART_NODMA
-// #define _USE_HW_USB_PERI_CDC_UART_DMA
-// #endif
-
-// #if defined(_USE_HW_UART_PERI_DMA) && defined(_USE_HW_UART_PERI_NODMA)
-// #error "_USE_HW_USB_PERI_CDC_UART_DMA and _USE_HW_USB_PERI_CDC_UART_NODMA cannot be defined at the same time"
-// #endif
-
-// #endif
-
-// #if defined(_USE_HW_UART) && defined(_USE_HW_UART_PERI)
-
-// #endif
-
-// #endif //_USE_HW_USB_PERI
-
 
 #endif /* SRC_HW_HW_DEF_H_ */
