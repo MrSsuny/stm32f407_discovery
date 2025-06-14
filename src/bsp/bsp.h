@@ -12,6 +12,13 @@
 #include "stm32f4xx_hal.h"
 #include "usb_device.h"
 
+#define _USE_LOG_PRINT 1
+#if _USE_LOG_PRINT
+#define logPrintf(fmt, ...) printf(fmt, ##__VA_ARGS__)
+#else
+#define logPrintf(fmt, ...)
+#endif
+
 void bspInit(void);
 
 void delay(uint32_t ms);

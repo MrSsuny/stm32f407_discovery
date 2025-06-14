@@ -9,7 +9,7 @@
 #define SRC_COMMON_HW_INCLUDE_UART_H_
 
 #include "hw_def.h"
-
+//#include  "usbd_cdc_if.h"
 #ifdef _USE_HW_UART
 
 #define UART_MAX_CH         HW_UART_MAX_CH

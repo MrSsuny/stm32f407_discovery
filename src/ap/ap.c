@@ -34,8 +34,9 @@ void apMain(void)
       //debugPrint("debug printf %d\n", (int)pre_time);
       //logPrintf("printf Test %d\n", (int)pre_time);
       //strlen
-      uartPrintf(_DEF_UART2,"Uart1 %d\n",millis());
-      uartPrintf(_DEF_UART1,"USB UART Loop %d\n",millis());
+      uartPrintf(_DEF_UART2,"Uart1 %d\n",(int)millis());
+      uartPrintf(_DEF_UART1,"USB UART Loop %d\n",(int)millis());
+      logPrintf("logPrintf %d\n", (int)millis());
     }
 
     //HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_12);

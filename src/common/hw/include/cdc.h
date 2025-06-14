@@ -11,7 +11,7 @@
 #include "hw_def.h"
 
 
-#ifdef _USE_HW_CDC
+#ifdef _USE_HW_USB_CDC
 
 bool     cdcInit(void);
 uint32_t cdcAvailable(void);

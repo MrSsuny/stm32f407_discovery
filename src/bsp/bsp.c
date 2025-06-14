@@ -8,6 +8,17 @@
 
 #include "bsp.h"
 
+#define printLog(fmt, ...) printLog_(__FILE__, __FUNCTION__, __LINE__, fmt, ##VA_ARGS__)
+//#define printLog(fmt, ...)
+
+
+void printLog_(const char* filename,const char* funcname, const int lineno, const char* fmt, ... )
+{
+  va_list ap;
+  va_start(ap, fmt);
+  printf("[FILENAME: %s, FUNCNAME: %s, LINENO: %d] ,",filename,funcname,lineno);
+  va_end(ap);
+}
 
 void bspInit(void)
 {
