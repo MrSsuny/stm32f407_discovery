@@ -16,13 +16,13 @@ static bool is_open[UART_MAX_CH];
 static qbuffer_t qbuffer[UART_MAX_CH];
 static uint8_t rx_buf[256];
 
-#ifdef _USE_HW_UART_PERI_NODMA
+#ifdef _USE_HW_UART_NODMA
 static uint8_t rx_data[UART_MAX_CH]; //IT 모드일때 사용
 #endif
 //UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart3; //PB10,11
 //DMA_HandleTypeDef hdma_usart1_rx;
-#ifdef _USE_HW_UART_PERI_DMA
+#ifdef _USE_HW_UART_DMA
 DMA_HandleTypeDef hdma_usart3_rx;
 #endif
 
@@ -83,7 +83,7 @@ bool uartOpen(uint8_t ch, uint32_t baud)
 //      HAL_NVIC_EnableIRQ(DMA2_Stream2_IRQn);
 ////DMA 설정 여기까지
 //
-#ifdef _USE_HW_UART_PERI_DMA
+#ifdef _USE_HW_UART_DMA
       /* DMA controller clock enable */
       __HAL_RCC_DMA1_CLK_ENABLE();
 
@@ -112,7 +112,7 @@ bool uartOpen(uint8_t ch, uint32_t baud)
 //        }
 //        qbuffer[ch].in = qbuffer[ch].len - hdma_usart1_rx.Instance->NDTR;
 //        qbuffer[ch].out = qbuffer[ch].in; //buffer는 flush 된다.(ring buffer 의미상)
-#ifdef _USE_HW_UART_PERI_DMA
+#ifdef _USE_HW_UART_DMA
 //https://www.youtube.com/watch?v=NJd2u4fHXQA&list=PLvFHFPM09alKygQq-L6_6DwuNqTybIAw0&index=10
 //10분정도 위치에 내용 있음
         if(HAL_UART_Receive_DMA(&huart3, (uint8_t *)&rx_buf[0],256) != HAL_OK)
@@ -122,7 +122,7 @@ bool uartOpen(uint8_t ch, uint32_t baud)
         qbuffer[ch].in = qbuffer[ch].len - hdma_usart3_rx.Instance->NDTR;
         qbuffer[ch].out = qbuffer[ch].in; //buffer는 flush 된다.(ring buffer 의미상)
 #endif
-#ifdef _USE_HW_UART_PERI_NODMA
+#ifdef _USE_HW_UART_NODMA
         //IT  일때 이걸로
         if(HAL_UART_Receive_IT(&huart3, (uint8_t *)&rx_data[_DEF_UART2],1) != HAL_OK)
         {
@@ -131,9 +131,6 @@ bool uartOpen(uint8_t ch, uint32_t baud)
 
 #endif
 
-#if defined(_USE_HW_UART_PERI_DMA) && defined(_USE_HW_UART_PERI_NODMA)
-#error "_USE_HW_UART_PERI_DMA and _USE_HW_UART_PERI_NODMA cannot be defined at the same time"
-#endif
 
        }
        break;
@@ -151,7 +148,7 @@ uint32_t uartAvailable(uint8_t ch)
       ret = cdcAvailable();
       break;
     case _DEF_UART2:
-#ifdef _USE_HW_UART_PERI_DMA //DMA 일때
+#ifdef _USE_HW_UART_DMA //DMA 일때
       qbuffer[ch].in = qbuffer[ch].len - hdma_usart3_rx.Instance->NDTR;
       //hdma_usart1_rx.Instance->NDTR 초기값은 256 으로 세팅되어 있는 상태
       //      //RM0090 참고
@@ -265,7 +262,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 
-#ifdef _USE_HW_UART_PERI_DMA
+#ifdef _USE_HW_UART_DMA
     /* USART3 DMA Init */
     /* USART3_RX Init */
     hdma_usart3_rx.Instance = DMA1_Stream1;
@@ -311,7 +308,7 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
     */
     HAL_GPIO_DeInit(GPIOB, GPIO_PIN_10|GPIO_PIN_11);
 
-#ifdef _USE_HW_UART_PERI_DMA
+#ifdef _USE_HW_UART_DMA
     /* USART3 DMA DeInit */
     HAL_DMA_DeInit(uartHandle->hdmarx);
 #endif
@@ -365,7 +362,7 @@ void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart)
 //
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-#ifdef _USE_HW_UART_PERI_NODMA //DMA 사용시 필요 없음
+#ifdef _USE_HW_UART_NODMA //DMA 사용시 필요 없음
   if(huart->Instance == USART3)
   {
     qbufferWrite(&qbuffer[_DEF_UART2],&rx_data[_DEF_UART2],1 );
