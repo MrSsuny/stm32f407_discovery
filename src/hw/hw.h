@@ -17,7 +17,7 @@
 #include "flash.h"
 #include "cli.h"
 #include "gpio.h"
-
+#include "sd.h"
 
 void hwInit(void);
 
