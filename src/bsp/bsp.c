@@ -29,7 +29,7 @@ void bspInit(void)
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
-  MX_USB_DEVICE_Init();
+ // MX_USB_DEVICE_Init();
 }
 
 void delay(uint32_t ms)

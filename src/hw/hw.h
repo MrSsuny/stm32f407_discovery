@@ -13,6 +13,7 @@
 
 #include "led.h"
 #include "uart.h"
+#include "usb.h"
 #include "flash.h"
 #include "cli.h"
 

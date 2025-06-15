@@ -13,9 +13,11 @@
 void hwInit(void)
 {
   bspInit();
+  usbInit(); //uart init 보다 먼저 와야한다.
+  uartInit();
   cliInit();
   ledInit();
-  uartInit();
+
 
   flashInit();
 }

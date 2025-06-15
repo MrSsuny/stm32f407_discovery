@@ -32,9 +32,7 @@ bool uartInit(void)
   {
     is_open[i] = false;
   }
-#ifdef _USE_HW_USB_CDC
-  delay(1000);
-#endif
+
   return true;
 }
 bool uartOpen(uint8_t ch, uint32_t baud)
