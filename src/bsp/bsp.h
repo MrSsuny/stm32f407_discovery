@@ -10,7 +10,7 @@
 
 #include "def.h"
 #include "stm32f4xx_hal.h"
-#include "usb_device.h"
+//#include "usb_device.h"
 
 #define _USE_LOG_PRINT 1
 #if _USE_LOG_PRINT

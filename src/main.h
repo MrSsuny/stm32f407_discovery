@@ -8,7 +8,10 @@
 #ifndef SRC_MAIN_H_
 #define SRC_MAIN_H_
 
+
+#include "stm32f4xx_hal.h"
 #include "ap.h"
+
 
 #define PH0_OSC_IN_Pin GPIO_PIN_0
 #define PH0_OSC_IN_GPIO_Port GPIOH

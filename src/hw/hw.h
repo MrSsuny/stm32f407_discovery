@@ -13,6 +13,10 @@
 
 #include "led.h"
 #include "uart.h"
+#include "flash.h"
+#include "cli.h"
+
+
 void hwInit(void);
 
 #endif /* SRC_HW_HW_H_ */

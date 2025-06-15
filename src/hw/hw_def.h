@@ -23,13 +23,22 @@
 #define _USE_HW_USB
 #define _USE_HW_USB_CDC
 
+#define _USE_HW_FLASH
+
+#define _USE_HW_CLI
+#define      HW_CLI_CMD_NAME_MAX    16
+#define      HW_CLI_CMD_LIST_MAX    16
+#define      HW_CLI_LINE_HIS_MAX    4
+#define      HW_CLI_LINE_BUF_MAX    32
+
+
 // -------------------------------------------------------------------
 // HW Options (DMA, NODMA, etc.)
 // -------------------------------------------------------------------
 
 // UART Peripheral DMA/NODMA selection (Required: Select only one)
-// #define _USE_HW_UART_DMA
-#define _USE_HW_UART_NODMA
+#define _USE_HW_UART_DMA
+//#define _USE_HW_UART_NODMA
 
 #if defined(_USE_HW_UART_DMA) && defined(_USE_HW_UART_NODMA)
 #error "UART DMA and NODMA options cannot be enabled simultaneously"
