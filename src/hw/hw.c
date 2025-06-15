@@ -19,6 +19,9 @@ void hwInit(void)
   ledInit();
   gpioInit();
 
-  flashInit();
-  sdInit();
+  //flashInit();
+  if(sdInit() == true)
+  {
+    fatfsInit();
+  }
 }

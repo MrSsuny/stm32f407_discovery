@@ -26,6 +26,7 @@
 #define _USE_HW_FLASH
 
 #define _USE_HW_SD
+#define _USE_HW_FATFS
 
 #define _USE_HW_CLI
 #define      HW_CLI_CMD_NAME_MAX    16
