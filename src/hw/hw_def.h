@@ -24,6 +24,8 @@
 #define _USE_HW_USB_CDC
 
 #define _USE_HW_FLASH
+#define _USE_HW_GPIO
+#define      HW_GPIO_MAX_CH       1
 
 #define _USE_HW_CLI
 #define      HW_CLI_CMD_NAME_MAX    16

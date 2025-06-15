@@ -16,6 +16,7 @@
 #include "uart.h"
 #include "flash.h"
 #include "cli.h"
+#include "gpio.h"
 
 
 void hwInit(void);
