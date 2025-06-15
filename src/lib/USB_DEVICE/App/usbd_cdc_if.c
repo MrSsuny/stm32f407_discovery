@@ -101,30 +101,30 @@ uint32_t cdcGetBaud(void)
 }
 uint32_t sof_count = 0;
 
-//uint8_t USBD_CDC_SOF(struct _USBD_HandleTypeDef *pdev)
-//{
-//  //sof_count++;
-//  if(rx_full == true)
-//  {
-//    uint32_t buf_len;
-//     //수신 법퍼에서 비어있는 데이터 양
-//     buf_len = (rx_len - cdcAvailable()) - 1;
-//     if(buf_len >= USB_FS_MAX_PACKET_SIZE)
-//     {
-//       //다음 데이터 보내줘
-//       //USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &Buf[0]); //이거는 한번만 해주면됨
-//       USBD_CDC_ReceivePacket(pdev);
-//       rx_full = false;
-//     }
-//     else
-//     {
-//       //버퍼 용량이 >>>>>부족하니, 기다려라..
-//       rx_full = true;
-//     }
-//
-//  }
-//  return 0;
-//}
+uint8_t USBD_CDC_SOF(struct _USBD_HandleTypeDef *pdev)
+{
+  //sof_count++;
+  if(rx_full == true)
+  {
+    uint32_t buf_len;
+     //수신 법퍼에서 비어있는 데이터 양
+     buf_len = (rx_len - cdcAvailable()) - 1;
+     if(buf_len >= USB_FS_MAX_PACKET_SIZE)
+     {
+       //다음 데이터 보내줘
+       //USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &Buf[0]); //이거는 한번만 해주면됨
+       USBD_CDC_ReceivePacket(pdev);
+       rx_full = false;
+     }
+     else
+     {
+       //버퍼 용량이 >>>>>부족하니, 기다려라..
+       rx_full = true;
+     }
+
+  }
+  return 0;
+}
 
 /* USER CODE END INCLUDE */
 
