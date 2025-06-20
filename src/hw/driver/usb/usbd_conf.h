@@ -74,7 +74,12 @@
 #define USBD_LPM_ENABLED     0U
 /*---------- -----------*/
 #define USBD_SELF_POWERED     1U
+#ifdef _USE_HW_USB_CDC
 
+#endif
+#ifdef _USE_HW_USB_MSC
+#define MSC_MEDIA_PACKET     512U
+#endif
 /****************************************/
 /* #define for FS and HS identification */
 #define DEVICE_FS 		0

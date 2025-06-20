@@ -17,10 +17,11 @@
 #include "cdc.h"
 #endif
 
-//#if _USE_HW_USB_MSC== 1
-//#include "usbd_msc.h"
-//#include "usbd_storage_if.h"
-//#endif
+#if defined(_USE_HW_USB_MSC)
+#include "usbd_msc.h"
+#include "usbd_storage_if.h"
+#include "usbd_desc.h"
+#endif
 
 
 static bool is_init = false;
@@ -107,9 +108,9 @@ bool usbBegin(UsbMode usb_mode)
     {
       return false;
     }
-    cdcInit();
-    is_usb_mode = USB_MSC_MODE;
+
     ret = true;
+    is_usb_mode = USB_MSC_MODE;
   }
 #endif
 

@@ -146,7 +146,10 @@ uint32_t uartAvailable(uint8_t ch)
   switch(ch)
   {
     case _DEF_UART1:
+#ifdef _USE_HW_USB_CDC
       ret = cdcAvailable();
+#endif
+
       break;
     case _DEF_UART2:
 #ifdef _USE_HW_UART_DMA //DMA 일때
@@ -173,7 +176,9 @@ uint8_t  uartRead(uint8_t ch)
   switch(ch)
   {
     case _DEF_UART1:
+#ifdef _USE_HW_USB_CDC
       ret = cdcRead();
+#endif
       break;
     case _DEF_UART2:
       qbufferRead(&qbuffer[_DEF_UART2], &ret,1);
@@ -189,7 +194,9 @@ uint32_t uartWrite(uint8_t ch, uint8_t *p_data,uint32_t length)
   switch(ch)
   {
     case _DEF_UART1:
+#ifdef _USE_HW_USB_CDC
       ret = cdcWrite(p_data, length);
+#endif
       break;
     case _DEF_UART2:
       status = HAL_UART_Transmit(&huart3, p_data, length, 100);
@@ -230,7 +237,9 @@ uint32_t uartGetBaud(uint8_t ch)
   switch(ch)
   {
     case _DEF_UART1:
+#ifdef _USE_HW_USB_CDC
       ret = cdcGetBaud();
+#endif
       break;
 //    case _DEF_UART2:
 //      ret = huart1.Init.BaudRate;

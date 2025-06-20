@@ -23,11 +23,12 @@
 #include "usb_device.h"
 #include "usbd_core.h"
 #include "usbd_desc.h"
-#include "usbd_cdc.h"
-#include "usbd_cdc_if.h"
+#include "usbd_msc.h"
+#include "usbd_storage_if.h"
 
+#if defined(_USE_HW_USB_MSC)
 /* USER CODE BEGIN Includes */
-#ifdef _USE_HW_USB_CDC
+
 /* USER CODE END Includes */
 
 /* USER CODE BEGIN PV */
@@ -68,15 +69,15 @@ USBD_HandleTypeDef hUsbDeviceFS;
 //  /* USER CODE END USB_DEVICE_Init_PreTreatment */
 //
 //  /* Init Device Library, add supported class and start the library. */
-//  if (USBD_Init(&hUsbDeviceFS, &FS_Desc, DEVICE_FS) != USBD_OK)
+//  if (USBD_Init(&hUsbDeviceFS, &MSC_Desc, DEVICE_FS) != USBD_OK)
 //  {
 //    Error_Handler();
 //  }
-//  if (USBD_RegisterClass(&hUsbDeviceFS, &USBD_CDC) != USBD_OK)
+//  if (USBD_RegisterClass(&hUsbDeviceFS, &USBD_MSC) != USBD_OK)
 //  {
 //    Error_Handler();
 //  }
-//  if (USBD_CDC_RegisterInterface(&hUsbDeviceFS, &USBD_Interface_fops_FS) != USBD_OK)
+//  if (USBD_MSC_RegisterStorage(&hUsbDeviceFS, &USBD_Storage_Interface_fops_FS) != USBD_OK)
 //  {
 //    Error_Handler();
 //  }
@@ -97,5 +98,5 @@ USBD_HandleTypeDef hUsbDeviceFS;
 /**
   * @}
   */
-#endif
 
+#endif
