@@ -24,5 +24,5 @@ void hwInit(void)
   {
     fatfsInit();
   }
-  usbBegin(USB_CDC_MODE);
+  usbBegin(USB_MSC_MODE);
 }

@@ -21,8 +21,8 @@
 #define      HW_UART_MAX_CH          2
 
 #define _USE_HW_USB
-#define _USE_HW_USB_CDC
-//#define _USE_HW_USB_MSC
+//#define _USE_HW_USB_CDC
+#define _USE_HW_USB_MSC
 
 #define _USE_HW_FLASH
 

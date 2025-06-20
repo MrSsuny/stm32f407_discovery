@@ -22,7 +22,7 @@
 #include "usbd_cdc_if.h"
 
 /* USER CODE BEGIN INCLUDE */
-
+#ifdef _USE_HW_USB_CDC
 #include "cdc.h"
 
 USBD_CDC_LineCodingTypeDef LineCoding =
@@ -453,3 +453,4 @@ static int8_t CDC_TransmitCplt_FS(uint8_t *Buf, uint32_t *Len, uint8_t epnum)
 /**
   * @}
   */
+#endif
