@@ -14,6 +14,7 @@
 #ifdef _USE_HW_USB_CDC
 
 bool     cdcInit(void);
+bool     cdcIsInit(void);
 uint32_t cdcAvailable(void);
 uint8_t  cdcRead(void);
 void     cdcDatatIn(uint8_t rx_data);

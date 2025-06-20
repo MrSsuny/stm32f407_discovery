@@ -7,30 +7,115 @@
 
 
 #include "usb.h"
-#include "usb_device.h"
+
+#ifdef _USE_HW_USB
+#include "usbd_core.h"
+
+#if defined(_USE_HW_USB_CDC)
+#include "usbd_cdc.h"
+#include "usbd_cdc_if.h"
+#include "cdc.h"
+#endif
+
+//#if _USE_HW_USB_MSC== 1
+//#include "usbd_msc.h"
+//#include "usbd_storage_if.h"
+//#endif
+
+
+static bool is_init = false;
+static UsbMode is_usb_mode = USB_NON_MODE;
+
+extern USBD_HandleTypeDef hUsbDeviceFS;
+
+extern USBD_DescriptorsTypeDef CDC_Desc;
+extern USBD_DescriptorsTypeDef MSC_Desc;
 
 
 bool usbInit(void)
 {
   bool ret = true;
 
-//  GPIO_InitTypeDef GPIO_InitStruct = {0};
-//  GPIO_InitStruct.Pin = GPIO_PIN_12;
-//  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_OD;
-//  GPIO_InitStruct.Pull = GPIO_NOPULL;
-//  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-//  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-//
-//  HAL_GPIO_WritePin(GPIOA,GPIO_PIN_12,GPIO_PIN_RESET);
-//  delay(100);
-//  HAL_GPIO_WritePin(GPIOA,GPIO_PIN_12,GPIO_PIN_SET);
-//  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-//
-//  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  MX_USB_DEVICE_Init();
-//#ifdef _USE_HW_USB_CDC
-  delay(1000);
-//#endif
+
   return ret;
 }
+
+void usbDeInit(void)
+{
+  if (is_init == true)
+  {
+    USBD_DeInit(&hUsbDeviceFS);
+  }
+}
+
+UsbMode usbGetMode(void)
+{
+  return is_usb_mode;
+}
+
+bool usbBegin(UsbMode usb_mode)
+{
+  bool ret = false;
+
+
+#if defined(_USE_HW_USB_CDC)
+
+  if (usb_mode == USB_CDC_MODE)
+  {
+    if (USBD_Init(&hUsbDeviceFS, &CDC_Desc, DEVICE_FS) != USBD_OK)
+    {
+      return false;
+    }
+    if (USBD_RegisterClass(&hUsbDeviceFS, &USBD_CDC) != USBD_OK)
+    {
+      return false;
+    }
+    if (USBD_CDC_RegisterInterface(&hUsbDeviceFS, &USBD_Interface_fops_FS) != USBD_OK)
+    {
+      return false;
+    }
+    if (USBD_Start(&hUsbDeviceFS) != USBD_OK)
+    {
+      return false;
+    }
+
+    cdcInit();
+
+    is_usb_mode = USB_CDC_MODE;
+    ret = true;
+  }
+#endif
+
+#if defined(_USE_HW_USB_MSC)
+
+  if (usb_mode == USB_MSC_MODE)
+  {
+    if (USBD_Init(&hUsbDeviceFS, &MSC_Desc, DEVICE_FS) != USBD_OK)
+    {
+      return false;
+    }
+    if (USBD_RegisterClass(&hUsbDeviceFS, &USBD_MSC) != USBD_OK)
+    {
+      return false;
+    }
+    if (USBD_MSC_RegisterStorage(&hUsbDeviceFS, &USBD_Storage_Interface_fops_FS) != USBD_OK)
+    {
+      return false;
+    }
+    if (USBD_Start(&hUsbDeviceFS) != USBD_OK)
+    {
+      return false;
+    }
+    cdcInit();
+    is_usb_mode = USB_MSC_MODE;
+    ret = true;
+  }
+#endif
+
+
+  is_init = ret;
+
+  return ret;
+}
+#endif

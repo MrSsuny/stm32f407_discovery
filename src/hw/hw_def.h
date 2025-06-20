@@ -8,7 +8,7 @@
 #ifndef SRC_HW_HW_DEF_H_
 #define SRC_HW_HW_DEF_H_
 
-#include "def.h"
+#include "common/def.h"
 #include "bsp.h"
 
 // -------------------------------------------------------------------
@@ -22,6 +22,7 @@
 
 #define _USE_HW_USB
 #define _USE_HW_USB_CDC
+//#define _USE_HW_USB_MSC
 
 #define _USE_HW_FLASH
 
