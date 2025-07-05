@@ -28,8 +28,8 @@
 // -------------------------------------------------------------------
 
 // UART Peripheral DMA/NODMA selection (Required: Select only one)
-// #define _USE_HW_UART_DMA
-#define _USE_HW_UART_NODMA
+#define _USE_HW_UART_DMA
+//#define _USE_HW_UART_NODMA
 
 #if defined(_USE_HW_UART_DMA) && defined(_USE_HW_UART_NODMA)
 #error "UART DMA and NODMA options cannot be enabled simultaneously"
@@ -37,8 +37,8 @@
 
 
 // DMA/NODMA option for USB CDC <-> UART (Required: Select only one)
-#define _USE_HW_USB_CDC_NODMA
-// #define _USE_HW_USB_CDC_DMA
+//#define _USE_HW_USB_CDC_NODMA
+ #define _USE_HW_USB_CDC_DMA
 
 #if defined(_USE_HW_USB_CDC_DMA) && defined(_USE_HW_USB_CDC_NODMA)
 #error "Only one option (DMA or NODMA) can be selected for USB CDC UART"
