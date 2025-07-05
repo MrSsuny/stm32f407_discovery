@@ -39,7 +39,7 @@ bool sdInit(void)
   hsd.Init.ClockPowerSave = SDIO_CLOCK_POWER_SAVE_DISABLE;
   hsd.Init.BusWide        = SDIO_BUS_WIDE_1B;
   hsd.Init.HardwareFlowControl = SDIO_HARDWARE_FLOW_CONTROL_DISABLE;
-  hsd.Init.ClockDiv       = SDIO_TRANSFER_CLK_DIV;
+  hsd.Init.ClockDiv       = SDIO_INIT_CLK_DIV;
 
 
   is_detected = false;
@@ -52,6 +52,7 @@ bool sdInit(void)
   {
     if (HAL_SD_Init(&hsd) == HAL_OK)
     {
+      hsd.Init.ClockDiv       =   SDIO_TRANSFER_CLK_DIV;
       if (HAL_SD_ConfigWideBusOperation(&hsd, SDIO_BUS_WIDE_4B) == HAL_OK)
       {
         ret = true;

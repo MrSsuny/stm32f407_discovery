@@ -46,7 +46,7 @@
 /   3: f_lseek() function is removed in addition to 2. */
 
 
-#define	_USE_STRFUNC	1
+#define	_USE_STRFUNC	2
 /* This option switches string functions, f_gets(), f_putc(), f_puts() and
 /  f_printf().
 /
@@ -119,7 +119,7 @@
 */
 
 
-#define	_USE_LFN  2
+#define	_USE_LFN  3
 #define	_MAX_LFN	255
 /* The _USE_LFN switches the support of long file name (LFN).
 /
@@ -168,7 +168,7 @@
 / Drive/Volume Configurations
 /---------------------------------------------------------------------------*/
 
-#define _VOLUMES	2
+#define _VOLUMES	1
 /* Number of volumes (logical drives) to be used. */
 
 

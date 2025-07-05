@@ -193,11 +193,18 @@ int8_t STORAGE_Init_FS(uint8_t lun)
 int8_t STORAGE_GetCapacity_FS(uint8_t lun, uint32_t *block_num, uint16_t *block_size)
 {
   /* USER CODE BEGIN 3 */
-  UNUSED(lun);
+  sd_info_t info;
+   int8_t ret = -1;
 
-  *block_num  = STORAGE_BLK_NBR;
-  *block_size = STORAGE_BLK_SIZ;
-  return (USBD_OK);
+   if (sdIsDetected() == true)
+   {
+     sdGetInfo(&info);
+
+     *block_num = info.log_block_numbers - 1;
+     *block_size = info.log_block_size;
+     ret = 0;
+   }
+   return ret;
   /* USER CODE END 3 */
 }
 
@@ -209,9 +216,21 @@ int8_t STORAGE_GetCapacity_FS(uint8_t lun, uint32_t *block_num, uint16_t *block_
 int8_t STORAGE_IsReady_FS(uint8_t lun)
 {
   /* USER CODE BEGIN 4 */
-  UNUSED(lun);
+  static int8_t prev_status = 0;
+   int8_t ret = -1;
 
-  return (USBD_OK);
+   if (sdIsDetected() == true)
+   {
+     if (sdIsBusy() != true)
+     {
+       ret = 0;
+     }
+   }
+   else if (prev_status == 0)
+   {
+     prev_status = -1;
+   }
+   return ret;
   /* USER CODE END 4 */
 }
 
@@ -240,12 +259,16 @@ int8_t STORAGE_IsWriteProtected_FS(uint8_t lun)
 int8_t STORAGE_Read_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t blk_len)
 {
   /* USER CODE BEGIN 6 */
-  UNUSED(lun);
-  UNUSED(buf);
-  UNUSED(blk_addr);
-  UNUSED(blk_len);
+  int8_t ret = -1;
 
-  return (USBD_OK);
+   if (sdIsDetected() == true)
+   {
+     if (sdReadBlocks(blk_addr, buf, blk_len, 1000) == true)
+     {
+       ret = 0;
+     }
+   }
+   return ret;
   /* USER CODE END 6 */
 }
 
@@ -260,12 +283,16 @@ int8_t STORAGE_Read_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t bl
 int8_t STORAGE_Write_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t blk_len)
 {
   /* USER CODE BEGIN 7 */
-  UNUSED(lun);
-  UNUSED(buf);
-  UNUSED(blk_addr);
-  UNUSED(blk_len);
+  int8_t ret = -1;
 
-  return (USBD_OK);
+   if (sdIsDetected() == true)
+   {
+     if (sdWriteBlocks(blk_addr, buf, blk_len, 1000) == true)
+     {
+       ret = 0;
+     }
+   }
+   return ret;
   /* USER CODE END 7 */
 }
 

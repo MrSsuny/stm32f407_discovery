@@ -15,9 +15,9 @@ extern void cdcDatatIn(uint8_t rx_data);
 extern uint32_t cdcWrite(uint8_t *p_data, uint32_t length);
 void apInit(void)
 {
-  uartOpen(_DEF_UART1,115200);
+  //uartOpen(_DEF_UART1,115200);
   uartOpen(_DEF_UART2,115200);
-  cliOpen(_DEF_UART1, 115200);
+  //cliOpen(_DEF_UART1, 115200);
   cliOpenLog(_DEF_UART2, 115200);
 }
 
@@ -25,7 +25,7 @@ void apMain(void)
 {
   uint32_t pre_time;
   pre_time = millis();
-  uartPrintf(_DEF_UART1,"USB UART Main %d\n",millis());
+  //uartPrintf(_DEF_UART1,"USB UART Main %d\n",millis());
 
   while(1)
   {
