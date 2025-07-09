@@ -90,7 +90,7 @@ bool uartOpen(uint8_t ch, uint32_t baud)
 
       /* DMA interrupt init */
       /* DMA1_Stream1_IRQn interrupt configuration */
-      HAL_NVIC_SetPriority(DMA1_Stream1_IRQn, 4, 0);
+      HAL_NVIC_SetPriority(DMA1_Stream1_IRQn, 5, 0);
       HAL_NVIC_EnableIRQ(DMA1_Stream1_IRQn);
 #endif
 
@@ -293,7 +293,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
     __HAL_LINKDMA(uartHandle,hdmarx,hdma_usart3_rx);
 #endif
     /* USART3 interrupt Init */
-    HAL_NVIC_SetPriority(USART3_IRQn, 0, 0);
+    HAL_NVIC_SetPriority(USART3_IRQn, 6, 0);
     HAL_NVIC_EnableIRQ(USART3_IRQn);
   /* USER CODE BEGIN USART3_MspInit 1 */
 
