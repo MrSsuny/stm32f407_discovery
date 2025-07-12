@@ -24,6 +24,7 @@ typedef struct
 gpio_tbl_t gpio_tbl[GPIO_MAX_CH] =
 {
     {GPIOB, GPIO_PIN_9, _DEF_INPUT_PULLUP,GPIO_PIN_RESET,GPIO_PIN_SET,true},
+    {GPIOA, GPIO_PIN_0, _DEF_INPUT_PULLDOWN,GPIO_PIN_SET,GPIO_PIN_RESET,false},
 };
 
 #ifdef _USE_HW_CLI
@@ -81,9 +82,6 @@ bool gpioPinMode(uint8_t ch, uint8_t mode)
   GPIO_InitStruct.Pin = gpio_tbl[ch].pin;
   HAL_GPIO_Init(gpio_tbl[ch].port , &GPIO_InitStruct);
 
-#ifdef _USE_HW_CLI
-  cliAdd("gpio", cliGpio);
-#endif
 
   return ret;
 }

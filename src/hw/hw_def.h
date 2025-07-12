@@ -21,7 +21,7 @@
 #define      HW_UART_MAX_CH          2
 
 #define _USE_HW_USB
-//#define _USE_HW_USB_CDC
+#define _USE_HW_USB_CDC
 #define _USE_HW_USB_MSC
 
 #define _USE_HW_FLASH
@@ -36,7 +36,7 @@
 #define      HW_CLI_LINE_BUF_MAX    32
 
 #define _USE_HW_GPIO
-#define      HW_GPIO_MAX_CH         1
+#define      HW_GPIO_MAX_CH         2
 
 #define _PIN_GPIO_SDCARD_DETECT     0
 // -------------------------------------------------------------------

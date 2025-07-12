@@ -27,7 +27,7 @@
 static bool is_init = false;
 static UsbMode is_usb_mode = USB_NON_MODE;
 
-extern USBD_HandleTypeDef hUsbDeviceFS;
+USBD_HandleTypeDef hUsbDeviceFS;
 
 extern USBD_DescriptorsTypeDef CDC_Desc;
 extern USBD_DescriptorsTypeDef MSC_Desc;

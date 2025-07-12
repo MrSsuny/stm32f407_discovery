@@ -24,13 +24,13 @@
 #include "usbd_def.h"
 #include "usbd_core.h"
 #ifdef _USE_HW_USB_CDC
-#include "usbd_cdc.h"
+//#include "usbd_cdc.h"
 #endif
 #ifdef _USE_HW_USB_MSC
-#include "usbd_msc.h"
+//#include "usbd_msc.h"
 #endif
 /* USER CODE BEGIN Includes */
-
+#include "uart.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -176,6 +176,7 @@ void HAL_PCD_DataInStageCallback(PCD_HandleTypeDef *hpcd, uint8_t epnum)
   * @param  hpcd: PCD handle
   * @retval None
   */
+static int count = 0;
 #if (USE_HAL_PCD_REGISTER_CALLBACKS == 1U)
 static void PCD_SOFCallback(PCD_HandleTypeDef *hpcd)
 #else
@@ -183,6 +184,12 @@ void HAL_PCD_SOFCallback(PCD_HandleTypeDef *hpcd)
 #endif /* USE_HAL_PCD_REGISTER_CALLBACKS */
 {
   USBD_LL_SOF((USBD_HandleTypeDef*)hpcd->pData);
+//  if( (HAL_GetTick() - count) > 1000)
+//  {
+//    count = HAL_GetTick();
+//    uartPrintf(_DEF_UART2, "Tick");
+//  }
+
 }
 
 /**
@@ -625,17 +632,17 @@ USBD_StatusTypeDef USBD_LL_SetTestMode(USBD_HandleTypeDef *pdev, uint8_t testmod
   * @param  size: Size of allocated memory
   * @retval None
   */
-void *USBD_static_malloc(uint32_t size)
-{
-#ifdef _USE_HW_USB_CDC
-  static uint32_t mem[(sizeof(USBD_CDC_HandleTypeDef)/4)+1];/* On 32-bit boundary */
-#endif
-#ifdef _USE_HW_USB_MSC
-  static uint32_t mem[(sizeof(USBD_MSC_BOT_HandleTypeDef)/4)+1];/* On 32-bit boundary */
-#endif
-
-  return mem;
-}
+//void *USBD_static_malloc(uint32_t size)
+//{
+//#ifdef _USE_HW_USB_CDC
+//  static uint32_t mem[(sizeof(USBD_CDC_HandleTypeDef)/4)+1];/* On 32-bit boundary */
+//#endif
+//#ifdef _USE_HW_USB_MSC
+//  static uint32_t mem[(sizeof(USBD_MSC_BOT_HandleTypeDef)/4)+1];/* On 32-bit boundary */
+//#endif
+//
+//  return mem;
+//}
 
 /**
   * @brief  Dummy memory free
