@@ -74,10 +74,11 @@
   * @param  size: Size of allocated memory
   * @retval None
   */
+static uint32_t mem[(sizeof(USBD_CDC_HandleTypeDef)/4)+1];/* On 32-bit boundary */
 void *USBD_static_malloc(uint32_t size)
 {
 #ifdef _USE_HW_USB_CDC
-  static uint32_t mem[(sizeof(USBD_CDC_HandleTypeDef)/4)+1];/* On 32-bit boundary */
+ // static uint32_t mem[(sizeof(USBD_CDC_HandleTypeDef)/4)+1];/* On 32-bit boundary */
 #endif
 //#ifdef _USE_HW_USB_MSC
 //  static uint32_t mem[(sizeof(USBD_MSC_BOT_HandleTypeDef)/4)+1];/* On 32-bit boundary */

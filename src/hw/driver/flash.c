@@ -7,9 +7,12 @@
 
 
 #include "flash.h"
+#include "cli.h"
 
-
+#ifdef _USE_HW_FLASH
 #define FLASH_SECTOR_MAX 12
+
+
 
 typedef struct
 {
@@ -19,7 +22,7 @@ typedef struct
 
 //내부에서 사용하는 함수임으로 다른 모듈에서 사용하지 못하도록 static으로 막는다.
 static bool flashInSector(int16_t sector_num, uint32_t addr, uint32_t length);
-static uint32_t GetSector(uint32_t Address);
+//static uint32_t GetSector(uint32_t Address);
 
 //const 로 하면 ram을 사용안할수 있다. flash_tbl_t flash_tbl[FLASH_SECTOR_MAX];
 static flash_tbl_t flash_tbl[FLASH_SECTOR_MAX] =
@@ -38,10 +41,15 @@ static flash_tbl_t flash_tbl[FLASH_SECTOR_MAX] =
     {0x80E0000, 128*1024},//Sector 11
 };
 
-
+#ifdef _USE_HW_CLI
+static void cliFlash(cli_args_t *args);
+#endif
 
 bool flashInit(void)
 {
+#ifdef _USE_HW_CLI
+  cliAdd("flash",cliFlash);
+#endif
 
   return true;
 }
@@ -92,17 +100,14 @@ bool flashWrite(uint32_t addr, uint8_t *p_data, uint32_t length)
   bool ret = true;
   HAL_StatusTypeDef status;
 
-  if(addr%2 != 0)
-  {
-    return ret;
-  }
-  for(int i=0;i<length; i+=2)
+
+  for(int i=0;i<length; i+=1)
   {
     uint16_t data;
     data  = p_data[i+0] <<0;
     data |= p_data[i+1] <<8;
     HAL_FLASH_Unlock();
-    status = HAL_FLASH_Program(FLASH_TYPEPROGRAM_HALFWORD, addr+i, (uint64_t)data );
+    status = HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE, addr+i, (uint64_t)data );
     HAL_FLASH_Lock();
     if(status != HAL_OK)
     {
@@ -158,3 +163,72 @@ bool flashInSector(int16_t sector_num, uint32_t addr, uint32_t length)
   }
   return ret;
 }
+#ifdef _USE_HW_CLI
+void cliFlash(cli_args_t *args)
+{
+  bool ret = false;
+
+  if(args->argc == 1 && args->isStr(0,"info") == true)
+  {
+    for(int i = 0;i<FLASH_SECTOR_MAX;i++)
+    {
+      cliPrintf("0x%X : %dKB\n",flash_tbl[i].addr, flash_tbl[i].length/1024);
+    }
+    ret = true;
+  }
+  if(args->argc == 3 && args->isStr(0,"read") == true)
+  {
+    uint32_t addr;
+    uint32_t length;
+    addr = (uint32_t)args->getData(1);
+    length = (uint32_t)args->getData(2);
+    for(int i  = 0;i<length;i++)
+    {
+      cliPrintf("0x%X : 0x%X\n", addr+i, *((uint8_t *)(addr+i)));
+    }
+    ret = true;
+  }
+  if(args->argc == 3 && args->isStr(0,"erase") == true)
+  {
+    uint32_t addr;
+    uint32_t length;
+    addr = (uint32_t)args->getData(1);
+    length = (uint32_t)args->getData(2);
+    if(flashErase(addr,length) == true)
+    {
+      cliPrintf("Erase OK\n");
+    }
+    else
+    {
+      cliPrintf("Erase Fail\n");
+    }
+
+    ret = true;
+  }
+  if(args->argc == 3 && args->isStr(0,"write") == true)
+  {
+    uint32_t addr;
+    uint32_t data;
+    addr = (uint32_t)args->getData(1);
+    data = (uint32_t)args->getData(2);
+    if(flashWrite(addr,(uint8_t *)&data,4) == true)
+    {
+      cliPrintf("Write OK\n");
+    }
+    else
+    {
+      cliPrintf("Write Fail\n");
+    }
+
+    ret = true;
+  }
+  if(ret != true)
+  {
+    cliPrintf("flash info\n");
+    cliPrintf("flash read  addr length\n");
+    cliPrintf("flash write addr data\n");
+    cliPrintf("flash erase addr length\n");
+  }
+}
+#endif
+#endif
