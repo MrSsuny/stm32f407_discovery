@@ -16,6 +16,7 @@
   *
   ******************************************************************************
   */
+//#define _speed_up_test
 /* USER CODE END Header */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
@@ -49,8 +50,16 @@
   * @{
   */
 /* Define size for the receive and transmit buffer over CDC */
+//#define APP_RX_DATA_SIZE  2048
+//#define APP_TX_DATA_SIZE  2048
+#ifndef _speed_up_test
 #define APP_RX_DATA_SIZE  2048
 #define APP_TX_DATA_SIZE  2048
+#else
+#define APP_RX_DATA_SIZE  4096
+#define APP_TX_DATA_SIZE  4096
+#endif
+
 /* USER CODE BEGIN EXPORTED_DEFINES */
 
 /* USER CODE END EXPORTED_DEFINES */

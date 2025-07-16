@@ -19,6 +19,8 @@
 #include "gpio.h"
 #include "sd.h"
 #include "fatfs.h"
+#include "ymodem.h"
+
 void hwInit(void);
 
 #endif /* SRC_HW_HW_H_ */

@@ -22,6 +22,7 @@ void hwInit(void)
   gpioInit();
 
   flashInit();
+
   if(sdInit() == true)
   {
     fatfsInit();
@@ -36,6 +37,6 @@ void hwInit(void)
     //uartPrintf(_DEF_UART2, "SW Low(default)\n");
     usbBegin(USB_CDC_MODE);
   }
-
+  ymodemInit();
 
 }

@@ -35,8 +35,8 @@ USBD_CDC_LineCodingTypeDef LineCoding =
 
 uint32_t rx_in  = 0;
 uint32_t rx_out = 0;
-uint32_t rx_len = 512;
-uint8_t rx_buf[512];
+uint32_t rx_len = APP_RX_DATA_SIZE;
+uint8_t rx_buf[APP_RX_DATA_SIZE];
 bool rx_full = false;
 
 uint32_t cdcAvailable(void)
@@ -129,6 +129,10 @@ uint8_t USBD_CDC_SOF(struct _USBD_HandleTypeDef *pdev)
      }
 
   }
+//  if(sof_count % 1000 == 0)
+//  {
+//    uartPrintf(_DEF_UART2,"sof_count %d\n",sof_count);
+//  }
   return 0;
 }
 
@@ -382,13 +386,30 @@ static int8_t CDC_Control_FS(uint8_t cmd, uint8_t* pbuf, uint16_t length)
 static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
 {
   /* USER CODE BEGIN 6 */
-  USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &Buf[0]);
-  USBD_CDC_ReceivePacket(&hUsbDeviceFS);
+  //https://www.youtube.com/watch?v=qKyIt9xoy9U&list=PLvFHFPM09alKygQq-L6_6DwuNqTybIAw0&index=12
+  //20분 정도
+//  USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &Buf[0]);
+//  USBD_CDC_ReceivePacket(&hUsbDeviceFS);
 #ifdef  _USE_HW_USB_CDC
   for(int i=0;i<*Len;i++)
   {
     cdcDataIn(Buf[i]);
   }
+
+  uint32_t buf_len;
+  buf_len = (rx_len - cdcAvailable()) -1;
+  if(buf_len >= USB_FS_MAX_PACKET_SIZE)
+  {
+    //다음 데이터 보내줘
+    USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &Buf[0]);
+    USBD_CDC_ReceivePacket(&hUsbDeviceFS);
+  }
+  else
+  {
+    //버퍼 용량 부족, 기다려라
+    rx_full = true;
+  }
+
 #endif
   return (USBD_OK);
   /* USER CODE END 6 */
