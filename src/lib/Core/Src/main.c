@@ -20,6 +20,7 @@
 #include "main.h"
 #include "dma.h"
 #include "sdio.h"
+#include "tim.h"
 #include "usart.h"
 #include "usb_otg.h"
 #include "gpio.h"
@@ -94,6 +95,7 @@ int main(void)
   MX_USART3_UART_Init();
   MX_SDIO_SD_Init();
   MX_USB_OTG_FS_PCD_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
