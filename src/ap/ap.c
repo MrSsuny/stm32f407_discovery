@@ -14,6 +14,21 @@ extern uint8_t cdcRead(void);
 extern void cdcDatatIn(uint8_t rx_data);
 extern uint32_t cdcWrite(uint8_t *p_data, uint32_t length);
 extern uint32_t sof_count;
+extern bool firstPulseDetected;
+extern volatile int tim6Count;
+//extern TIM_HandleTypeDef htim2;
+
+/* 최대 20펄스, High/Low 시간(µs) 저장 */
+volatile uint32_t highTime[20];
+volatile uint32_t  lowTime[20];
+volatile uint8_t    pulseCount = 0;
+
+/* 캡처 타임스탬프 */
+volatile uint32_t lastCapTime = 0;
+
+/* 이벤트 구분용 타이머(ms) */
+volatile uint32_t lastEventTick = 0;
+
 void cliModem(cli_args_t *args);
 
 void apInit(void)
@@ -35,9 +50,28 @@ void apMain(void)
 #ifdef _USE_HW_USB_CDC
   uartPrintf(_DEF_UART1,"USB UART1 Main %d\n",millis());
 #endif
+//  HAL_Delay(50);
+//  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_RESET);
+//  HAL_Delay(50);
+//  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_SET);
+//  HAL_Delay(50);
+//  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_RESET);
+//  HAL_Delay(50);
+//  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_SET);
+//  HAL_Delay(50);
+//  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_RESET);
+//  HAL_Delay(50);
+//  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_SET);
+//  HAL_Delay(50);
+
+  TIM_IC_Start_IT(&htim2, TIM_CHANNEL_2);
+  //__HAL_TIM_DISABLE_IT(&htim6, TIM_IT_UPDATE);  // 일단 끄고
+
+  /* 초기화 */
+  lastEventTick = HAL_GetTick();
   while(1)
   {
-    if(millis()-pre_time >= 500)
+    if(millis()-pre_time >= 1000)
     {
       pre_time = millis();
       ledToggle(_DEF_LED1);
@@ -51,6 +85,9 @@ void apMain(void)
       //uartPrintf(_DEF_UART2,"Uart1 %d\n",(int)millis());
       //uartPrintf(_DEF_UART1,"USB UART Loop %d\n",(int)millis());
       //logPrintf("logPrintf %d\n", (int)millis());
+     // uartPrintf(_DEF_UART2,"tim6Count %d\n",(int)tim6Count);
+      //logPrintf("tim6Count %d\n", (int)tim6Count);
+
     }
 
     if(uartAvailable(_DEF_UART2)>0)
@@ -60,6 +97,7 @@ void apMain(void)
       rx_data = uartRead(_DEF_UART2);
       uartPrintf(_DEF_UART2, "Rx : 0x%X\n", rx_data);
     }
+    timerEventCheck();
 #ifdef _USE_HW_CLI
     cliMain();
 #endif

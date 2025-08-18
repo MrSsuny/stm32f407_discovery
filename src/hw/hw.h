@@ -20,6 +20,7 @@
 #include "sd.h"
 #include "fatfs.h"
 #include "ymodem.h"
+#include "timer.h"
 
 void hwInit(void);
 

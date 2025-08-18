@@ -24,7 +24,9 @@ typedef struct
 gpio_tbl_t gpio_tbl[GPIO_MAX_CH] =
 {
     {GPIOB, GPIO_PIN_9, _DEF_INPUT_PULLUP,GPIO_PIN_RESET,GPIO_PIN_SET,true},
-    {GPIOA, GPIO_PIN_0, _DEF_INPUT_PULLDOWN,GPIO_PIN_SET,GPIO_PIN_RESET,false},
+    {GPIOA, GPIO_PIN_1, _DEF_INPUT_PULLDOWN,GPIO_PIN_SET,GPIO_PIN_RESET,false},
+    {GPIOC, GPIO_PIN_6, _DEF_OUTPUT_PULLDOWN,GPIO_PIN_SET,GPIO_PIN_RESET,false},
+    {GPIOC, GPIO_PIN_7, _DEF_OUTPUT_PULLDOWN,GPIO_PIN_SET,GPIO_PIN_RESET,false}
 };
 
 #ifdef _USE_HW_CLI
@@ -50,6 +52,8 @@ bool gpioPinMode(uint8_t ch, uint8_t mode)
 
   GPIO_InitTypeDef GPIO_InitStruct = {0};
   __HAL_RCC_GPIOB_CLK_ENABLE();
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOC_CLK_ENABLE();
   switch(mode)
   {
     case _DEF_INPUT:

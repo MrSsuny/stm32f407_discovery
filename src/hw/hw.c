@@ -22,7 +22,7 @@ void hwInit(void)
   gpioInit();
 
   flashInit();
-
+  timerInit();
   if(sdInit() == true)
   {
     fatfsInit();

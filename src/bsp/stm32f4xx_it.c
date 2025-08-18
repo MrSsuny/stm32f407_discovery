@@ -59,6 +59,8 @@ extern PCD_HandleTypeDef hpcd_USB_OTG_FS;
 #ifdef _USE_HW_UART_DMA
 extern DMA_HandleTypeDef hdma_usart3_rx;
 #endif
+
+extern TIM_HandleTypeDef htim2;
 extern UART_HandleTypeDef huart3;
 
 extern DMA_HandleTypeDef hdma_sdio_rx;
@@ -66,7 +68,7 @@ extern DMA_HandleTypeDef hdma_sdio_tx;
 extern SD_HandleTypeDef hsd;
 
 /* USER CODE BEGIN EV */
-
+//int last
 /* USER CODE END EV */
 
 /******************************************************************************/
@@ -222,7 +224,26 @@ void DMA1_Stream1_IRQHandler(void)
 
   /* USER CODE END DMA1_Stream1_IRQn 1 */
 }
+/* @brief This function handles TIM2 global interrupt.
 
+ */
+
+void TIM2_IRQHandler(void)
+{
+ /* USER CODE BEGIN TIM2_IRQn 0 */
+  TIM2_Interrupt();
+
+
+ /* USER CODE END TIM2_IRQn 0 */
+ //HAL_TIM_IRQHandler(&htim2);
+
+ /* USER CODE BEGIN TIM2_IRQn 1 */
+
+
+
+ /* USER CODE END TIM2_IRQn 1 */
+
+}
 /**
   * @brief This function handles USART3 global interrupt.
   */
@@ -249,6 +270,27 @@ void SDIO_IRQHandler(void)
   /* USER CODE BEGIN SDIO_IRQn 1 */
 
   /* USER CODE END SDIO_IRQn 1 */
+}
+
+/**
+  * @brief This function handles TIM6 global interrupt, DAC1 and DAC2 underrun error interrupts.
+  */
+volatile int tim6Count = 0;
+void TIM6_DAC_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM6_DAC_IRQn 0 */
+  if (TIM6->SR & TIM_SR_UIF)
+   {
+       TIM6->SR &= ~TIM_SR_UIF;      // UIF 클리어
+       // 500ms마다 실행할 코드
+       //LED1_Toggle();
+       tim6Count++;
+   }
+  /* USER CODE END TIM6_DAC_IRQn 0 */
+  //HAL_TIM_IRQHandler(&htim6);
+  /* USER CODE BEGIN TIM6_DAC_IRQn 1 */
+
+  /* USER CODE END TIM6_DAC_IRQn 1 */
 }
 
 /**
